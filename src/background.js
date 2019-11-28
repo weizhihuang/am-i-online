@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, screen } from 'electron'
 import {
   createProtocol,
   installVueDevtools
@@ -17,15 +17,16 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800, height: 600, webPreferences: {
-      nodeIntegration: true
-    }
+    webPreferences: { nodeIntegration: true },
+    transparent: true,
+    frame: false
   })
+  win.setIgnoreMouseEvents(true)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) win.webContents.openDevTools()
+    // if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
     createProtocol('app')
     // Load the index.html when not in development
@@ -89,3 +90,9 @@ if (isDevelopment) {
     })
   }
 }
+
+ipcMain.on('set-ping-window', (_, { offsetWidth, offsetHeight }) => {
+  const { width } = screen.getPrimaryDisplay().workAreaSize
+  win.setSize(offsetWidth, offsetHeight)
+  win.setPosition(width - offsetWidth, 0)
+})
