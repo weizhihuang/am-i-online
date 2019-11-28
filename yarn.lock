@@ -8990,6 +8990,11 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
+tcp-ping@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/tcp-ping/-/tcp-ping-0.1.1.tgz#02dd7f42b5bf7d7cb78d5b7aacefa155fd8f7c0c"
+  integrity sha1-At1/QrW/fXy3jVt6rO+hVf2PfAw=
+
 temp-file@^3.3.4:
   version "3.3.6"
   resolved "https://registry.yarnpkg.com/temp-file/-/temp-file-3.3.6.tgz#bd7a1951338bf93b59380b498ec1804d5b76c449"
