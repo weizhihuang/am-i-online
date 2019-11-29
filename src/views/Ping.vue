@@ -1,5 +1,5 @@
 <template lang="pug">
-  div(class='text-right white--text' ref='ping') {{ ping }}
+  span(class='white--text ping' ref='ping') {{ ping }}
 </template>
 
 <script>
@@ -33,3 +33,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.ping {
+  float: right;
+}
+</style>
