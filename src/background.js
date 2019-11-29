@@ -84,7 +84,7 @@ app.on('ready', async () => {
     const contextMenu = Menu.buildFromTemplate([
       { role: 'quit' }
     ])
-    tray.setToolTip('This is my application.')
+    tray.setToolTip('Am I online?')
     tray.setContextMenu(contextMenu)
   }
 
