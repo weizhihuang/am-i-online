@@ -7,4 +7,4 @@ docker run --rm -ti \
  -v ${PWD##*/}-node-modules:/project/node_modules \
  -v ~/.cache/electron:/root/.cache/electron \
  -v ~/.cache/electron-builder:/root/.cache/electron-builder \
- electronuserland/builder:wine /bin/bash -c "yarn && yarn electron:build"
+ electronuserland/builder:wine /bin/bash -c "yarn && yarn electron:build -w"
