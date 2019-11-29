@@ -1,5 +1,5 @@
 <template lang="pug">
-  span(class='d-block text-right white--text' ref='ping') {{ ping }}
+  div(class='text-right white--text' ref='ping') {{ ping }}
 </template>
 
 <script>
