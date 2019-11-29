@@ -1,6 +1,7 @@
 'use strict'
 
 import { app, protocol, BrowserWindow, ipcMain, screen, Tray, Menu } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import {
   createProtocol,
   installVueDevtools
@@ -77,6 +78,8 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
 
+  } else {
+    autoUpdater.checkForUpdatesAndNotify()
   }
 
   if (process.platform === 'win32') {
