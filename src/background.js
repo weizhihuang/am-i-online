@@ -23,7 +23,8 @@ function createWindow() {
     webPreferences: { nodeIntegration: true },
     transparent: true,
     frame: false,
-    alwaysOnTop: true
+    alwaysOnTop: true,
+    skipTaskbar: true
   })
   win.setIgnoreMouseEvents(true)
 
