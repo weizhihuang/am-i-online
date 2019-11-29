@@ -19,7 +19,8 @@ function createWindow() {
   win = new BrowserWindow({
     webPreferences: { nodeIntegration: true },
     transparent: true,
-    frame: false
+    frame: false,
+    alwaysOnTop: true
   })
   win.setIgnoreMouseEvents(true)
 
