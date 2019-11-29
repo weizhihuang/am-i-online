@@ -1,15 +1,18 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, screen } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, screen, Tray, Menu } from 'electron'
 import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
+import path from 'path'
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+let tray = null
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
@@ -74,6 +77,16 @@ app.on('ready', async () => {
     }
 
   }
+
+  if (process.platform === 'win32') {
+    tray = new Tray(path.join(__static, 'favicon.ico'))
+    const contextMenu = Menu.buildFromTemplate([
+      { role: 'quit' }
+    ])
+    tray.setToolTip('This is my application.')
+    tray.setContextMenu(contextMenu)
+  }
+
   createWindow()
 })
 
