@@ -6,6 +6,12 @@
 
 <script>
 export default {
-  name: "App"
-};
+  name: 'App',
+}
 </script>
+
+<style lang="scss">
+::-webkit-scrollbar {
+  display: none;
+}
+</style>
