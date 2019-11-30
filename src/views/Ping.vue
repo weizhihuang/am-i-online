@@ -1,5 +1,5 @@
 <template lang="pug">
-  span(class='white--text ping' ref='ping') {{ ping }}
+  span(:style='profile.styleObj' ref='ping') {{ ping }}
 </template>
 
 <script>
@@ -8,9 +8,11 @@ import { ping } from 'tcp-ping'
 
 export default {
   name: 'ping',
+  props: ['profile'],
   data: () => ({
     ping: 'initializing',
-    intervalId: null
+    intervalId: null,
+    styleObj: {},
   }),
   mounted() {
     this.handleWindow()
@@ -33,9 +35,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-.ping {
-  float: right;
-}
-</style>
