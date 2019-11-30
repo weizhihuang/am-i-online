@@ -122,7 +122,7 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('set-ping-window', (_, { offsetWidth, offsetHeight }) => {
+ipcMain.on('set-window', (_, { offsetWidth, offsetHeight }) => {
   const { width } = screen.getPrimaryDisplay().workAreaSize
   win.setSize(offsetWidth, offsetHeight)
   win.setPosition(width - offsetWidth, 0)

@@ -30,7 +30,7 @@ export default {
   methods: {
     handleWindow() {
       const { offsetWidth, offsetHeight } = this.$refs.ping
-      ipcRenderer.send('set-ping-window', { offsetWidth, offsetHeight })
+      ipcRenderer.send('set-window', { offsetWidth, offsetHeight })
     },
   },
 }
