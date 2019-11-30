@@ -12,7 +12,6 @@ export default {
   data: () => ({
     ping: 'initializing',
     intervalId: null,
-    styleObj: {},
   }),
   mounted() {
     this.handleWindow()
