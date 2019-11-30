@@ -7,6 +7,8 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 import path from 'path'
+import fs from 'fs'
+import Store from './Store'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -14,9 +16,18 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 let tray = null
+let store
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
+
+function loadSettings() {
+  const settingsPath = path.join(app.getPath('userData'), 'settings.json')
+  if (!fs.existsSync(settingsPath)) {
+    fs.copyFileSync(path.join(__static, 'settings.json'), settingsPath)
+  }
+  store = new Store()
+}
 
 function createWindow() {
   // Create the browser window.
@@ -65,6 +76,8 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  loadSettings()
+
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     // Devtools extensions are broken in Electron 6.0.0 and greater
@@ -78,7 +91,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
 
-  } else {
+  } else if (store.get('autoUpdate')) {
     autoUpdater.checkForUpdatesAndNotify()
   }
 
