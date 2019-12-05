@@ -61,6 +61,7 @@ export default {
     })
   },
   beforeDestroy() {
+    clearInterval(this.intervalId)
     localStorage.setItem('lastUsed', this.profile.name)
   },
 }
