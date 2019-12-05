@@ -18,7 +18,7 @@ export default {
   }),
   beforeCreate() {
     const version = remote.app.getVersion()
-    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Color","colorUpdateRate":0.002,"styleObj":{"float":"right"}}`
+    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Color","colorUpdateRate":0.0002,"styleObj":{"float":"right"}}`
     const profiles = JSON.parse(localStorage.getItem('profiles'))
     if (!profiles) {
       localStorage.setItem('profiles', `{"default":${defaultProfile}}`)
