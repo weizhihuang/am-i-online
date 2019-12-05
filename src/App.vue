@@ -38,14 +38,15 @@ export default {
 
       if (colorMode !== 'None') {
         const { colorUpdateRate } = this.profile
-        const avgColor = ipcRenderer.sendSync('get-avg-color')
 
         if (colorMode === 'Color') {
           this.intervalId = setInterval(() => {
+            const avgColor = ipcRenderer.sendSync('get-avg-color')
             this.styleObj.color = `rgb(${map(avgColor, c => 255 - c)})`
           }, 1 / colorUpdateRate)
         } else if (colorMode === 'Light') {
           this.intervalId = setInterval(() => {
+            const avgColor = ipcRenderer.sendSync('get-avg-color')
             const brightness = Math.sqrt(
               0.299 * Math.pow(avgColor[0], 2) +
                 0.587 * Math.pow(avgColor[1], 2) +
