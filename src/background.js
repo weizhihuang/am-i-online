@@ -8,6 +8,8 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 import path from 'path'
 import fs from 'fs'
+import robot from 'robotjs'
+import _, { range, map } from 'lodash'
 import Store from './Store'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -122,8 +124,33 @@ if (isDevelopment) {
   }
 }
 
-ipcMain.on('set-window', (_, { offsetWidth, offsetHeight }) => {
+ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
   const { width } = screen.getPrimaryDisplay().workAreaSize
   win.setSize(offsetWidth, offsetHeight)
   win.setPosition(width - offsetWidth, 0)
+  event.reply('window-is-ready')
+})
+
+ipcMain.on('get-avg-color', event => {
+  const [width, height] = win.getSize()
+  const [x, y] = win.getPosition()
+  const img = robot.screen.capture(x, y, width, height)
+  const rate = img.width / width
+
+  const colors = []
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < height; j++) {
+      colors.push(img.colorAt(i * rate, j * rate))
+    }
+  }
+
+  event.returnValue = map(range(3), i =>
+    Math.round(
+      _(colors)
+        .map(color =>
+          map(color.match(/.{2}/g), c => parseInt(c, 16))
+        )
+        .meanBy(i)
+    )
+  )
 })

@@ -1,5 +1,5 @@
 <template lang="pug">
-  span(:style='profile.styleObj' ref='ping') {{ ping }}
+  span(:style='styleObj' ref='ping') {{ ping }}
 </template>
 
 <script>
@@ -8,7 +8,7 @@ import { ping } from 'tcp-ping'
 
 export default {
   name: 'ping',
-  props: ['profile'],
+  props: ['styleObj'],
   data: () => ({
     ping: 'initializing',
     intervalId: null,
