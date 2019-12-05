@@ -24,7 +24,7 @@ export default {
       localStorage.setItem('profiles', `{"default":${defaultProfile}}`)
     } else if (gt(version, profiles.default.version)) {
       profiles.default = JSON.parse(defaultProfile)
-      localStorage.setItem('profiles', profiles)
+      localStorage.setItem('profiles', JSON.stringify(profiles))
     }
   },
   created() {
