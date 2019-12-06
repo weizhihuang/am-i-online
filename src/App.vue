@@ -6,7 +6,6 @@
 
 <script>
 import { remote, ipcRenderer } from 'electron'
-import { map } from 'lodash'
 import { gt } from 'semver'
 
 export default {
@@ -18,7 +17,7 @@ export default {
   }),
   beforeCreate() {
     const version = remote.app.getVersion()
-    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Light","colorWhenLight":"#000","colorWhenDark":"#fff","colorUpdateRate":0.0002,"styleObj":{"float":"right"}}`
+    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Light","colorWhenBright":"#000","colorWhenDark":"#fff","colorUpdateRate":0.002,"styleObj":{"float":"right"}}`
     const profiles = JSON.parse(localStorage.getItem('profiles'))
     if (!profiles) {
       localStorage.setItem('profiles', `{"default":${defaultProfile}}`)
@@ -41,15 +40,15 @@ export default {
           const avgColor = ipcRenderer.sendSync('get-avg-color')
           // http://alienryderflex.com/hsp.html
           const brightness = Math.sqrt(
-            0.299 * Math.pow(avgColor[0], 2) +
-              0.587 * Math.pow(avgColor[1], 2) +
-              0.114 * Math.pow(avgColor[2], 2)
+            .299 * Math.pow(avgColor[0], 2) +
+              .587 * Math.pow(avgColor[1], 2) +
+              .114 * Math.pow(avgColor[2], 2)
           )
           this.styleObj.color =
             brightness > 127.5
-              ? this.profile.styleObj.colorWhenLight
-              : this.profile.styleObj.colorWhenDark
-        }, 1 / colorUpdateRate)
+              ? this.profile.colorWhenBright
+              : this.profile.colorWhenDark
+        }, 1 / this.profile.colorUpdateRate)
       }
     })
   },
