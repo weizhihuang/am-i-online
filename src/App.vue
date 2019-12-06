@@ -36,28 +36,19 @@ export default {
     ipcRenderer.on('window-is-ready', () => {
       const { colorMode } = this.profile
 
-      if (colorMode !== 'None') {
-        const { colorUpdateRate } = this.profile
-
-        if (colorMode === 'Color') {
-          this.intervalId = setInterval(() => {
-            const avgColor = ipcRenderer.sendSync('get-avg-color')
-            this.styleObj.color = `rgb(${map(avgColor, c => 255 - c)})`
-          }, 1 / colorUpdateRate)
-        } else if (colorMode === 'Light') {
-          this.intervalId = setInterval(() => {
-            const avgColor = ipcRenderer.sendSync('get-avg-color')
-            const brightness = Math.sqrt(
-              0.299 * Math.pow(avgColor[0], 2) +
-                0.587 * Math.pow(avgColor[1], 2) +
-                0.114 * Math.pow(avgColor[2], 2)
-            )
-            this.styleObj.color =
-              brightness > 127.5
-                ? this.profile.styleObj.lightColor
-                : this.profile.styleObj.darkColor
-          }, 1 / colorUpdateRate)
-        }
+      if (colorMode === 'Light') {
+        this.intervalId = setInterval(() => {
+          const avgColor = ipcRenderer.sendSync('get-avg-color')
+          const brightness = Math.sqrt(
+            0.299 * Math.pow(avgColor[0], 2) +
+              0.587 * Math.pow(avgColor[1], 2) +
+              0.114 * Math.pow(avgColor[2], 2)
+          ) // http://alienryderflex.com/hsp.html
+          this.styleObj.color =
+            brightness > 127.5
+              ? this.profile.styleObj.lightColor
+              : this.profile.styleObj.darkColor
+        }, 1 / colorUpdateRate)
       }
     })
   },
