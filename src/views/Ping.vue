@@ -15,6 +15,7 @@ export default {
   }),
   mounted() {
     this.handleWindow()
+    addEventListener('load', this.handleWindow)
     this.intervalId = setInterval(
       () =>
         ping({ address: '8.8.8.8', port: 53, attempts: 1 }, (err, { avg }) => {
