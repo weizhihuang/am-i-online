@@ -17,7 +17,7 @@ export default {
   }),
   beforeCreate() {
     const version = remote.app.getVersion()
-    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Light","colorWhenBright":"#000","colorWhenDark":"#fff","colorUpdateRate":0.002,"styleObj":{"float":"right"}}`
+    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Light","colorWhenBright":"#000","colorWhenDark":"#fff","colorUpdateRate":2,"styleObj":{"float":"right"}}`
     const profiles = JSON.parse(localStorage.getItem('profiles'))
     if (!profiles) {
       localStorage.setItem('profiles', `{"default":${defaultProfile}}`)
@@ -48,7 +48,7 @@ export default {
             brightness > 127.5
               ? this.profile.colorWhenBright
               : this.profile.colorWhenDark
-        }, 1 / this.profile.colorUpdateRate)
+        }, 1000 / this.profile.colorUpdateRate)
       }
     })
   },
