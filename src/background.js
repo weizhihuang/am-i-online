@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, screen, Tray, Menu } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, screen, Tray, Menu, powerMonitor } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import {
   createProtocol,
@@ -132,6 +132,11 @@ ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
 })
 
 ipcMain.on('get-avg-color', event => {
+  if (powerMonitor.getSystemIdleState(1) === 'locked') {
+    event.returnValue = [0, 0, 0]
+    return
+  }
+
   const [width, height] = win.getSize()
   const [x, y] = win.getPosition()
   const img = robot.screen.capture(x, y, width, height)
