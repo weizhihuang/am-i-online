@@ -8,11 +8,13 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 import path from 'path'
 import fs from 'fs'
+import { execSync } from 'child_process'
 import robot from 'robotjs'
 import _, { range, map } from 'lodash'
 import Store from './Store'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+const isWin = process.platform === 'win32'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -97,7 +99,7 @@ app.on('ready', async () => {
     autoUpdater.checkForUpdatesAndNotify()
   }
 
-  if (process.platform === 'win32') {
+  if (isWin) {
     tray = new Tray(path.join(__static, 'favicon.ico'))
     const contextMenu = Menu.buildFromTemplate([
       { role: 'quit' }
@@ -111,7 +113,7 @@ app.on('ready', async () => {
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
-  if (process.platform === 'win32') {
+  if (isWin) {
     process.on('message', data => {
       if (data === 'graceful-exit') {
         app.quit()
@@ -132,9 +134,11 @@ ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
 })
 
 ipcMain.on('get-avg-color', event => {
-  if (powerMonitor.getSystemIdleState(1) === 'locked') {
-    event.returnValue = [0, 0, 0]
-    return
+  if (isWin) {
+    if (powerMonitor.getSystemIdleState(1) === 'locked' || execSync('tasklist').toString().toLowerCase().indexOf('consent.exe') !== -1) {
+      event.returnValue = [0, 0, 0]
+      return
+    }
   }
 
   const [width, height] = win.getSize()
