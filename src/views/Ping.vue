@@ -14,7 +14,6 @@ export default {
     intervalId: null,
   }),
   mounted() {
-    this.handleWindow()
     addEventListener('load', this.handleWindow)
     this.intervalId = setInterval(
       () =>
