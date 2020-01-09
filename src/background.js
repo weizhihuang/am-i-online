@@ -16,11 +16,16 @@ import Store from './Store'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const isWin = process.platform === 'win32'
 
+const UAC_REG_QUERY = 'REG QUERY HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /v '
+const UACEnabled = isWin && execSync(UAC_REG_QUERY + 'EnableLUA').toString().includes('1') && execSync(UAC_REG_QUERY + 'PromptOnSecureDesktop').toString().includes('1')
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+let winPosition, winSize
 let tray = null
 let store
+let suspended = false
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
@@ -108,6 +113,14 @@ app.on('ready', async () => {
     tray.setContextMenu(contextMenu)
   }
 
+  powerMonitor.on('lock-screen', () => {
+    suspended = true
+  })
+
+  powerMonitor.on('unlock-screen', () => {
+    suspended = false
+  })
+
   createWindow()
 })
 
@@ -129,26 +142,25 @@ if (isDevelopment) {
 ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
   const { width } = screen.getPrimaryDisplay().workAreaSize
   win.setSize(offsetWidth, offsetHeight)
-  win.setPosition(width - offsetWidth, 0)
+  winPosition = { x: width - offsetWidth, y: 0 }
+  winSize = { width: offsetWidth, height: offsetHeight }
   event.reply('window-is-ready')
 })
 
 ipcMain.on('get-avg-color', event => {
   if (isWin) {
-    if (powerMonitor.getSystemIdleState(1) === 'locked' || execSync('tasklist').toString().toLowerCase().indexOf('consent.exe') !== -1) {
+    if (suspended || (UACEnabled && execSync('tasklist /fi "imagename eq consent.exe').toString().includes('='))) {
       event.returnValue = [0, 0, 0]
       return
     }
   }
 
-  const [width, height] = win.getSize()
-  const [x, y] = win.getPosition()
-  const img = robot.screen.capture(x, y, width, height)
-  const rate = img.width / width
+  const img = robot.screen.capture(winPosition.x, winPosition.y, winSize.width, winSize.height)
+  const rate = img.width / winSize.width
 
   const colors = []
-  for (let i = 0; i < width; i++) {
-    for (let j = 0; j < height; j++) {
+  for (let i = 0; i < winSize.width; i++) {
+    for (let j = 0; j < winSize.height; j++) {
       colors.push(img.colorAt(i * rate, j * rate))
     }
   }
