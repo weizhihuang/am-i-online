@@ -141,6 +141,7 @@ if (isDevelopment) {
 
 ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
   const { width } = screen.getPrimaryDisplay().workAreaSize
+  win.setPosition(width - offsetWidth, 0)
   win.setSize(offsetWidth, offsetHeight)
   winPosition = { x: width - offsetWidth, y: 0 }
   winSize = { width: offsetWidth, height: offsetHeight }
