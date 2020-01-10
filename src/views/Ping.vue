@@ -10,7 +10,7 @@ export default {
   name: 'ping',
   props: ['styleObj'],
   data: () => ({
-    ping: 'initializing',
+    ping: 'initializing...',
     intervalId: null,
   }),
   mounted() {

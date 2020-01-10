@@ -40,9 +40,9 @@ export default {
           const avgColor = ipcRenderer.sendSync('get-avg-color')
           // http://alienryderflex.com/hsp.html
           const brightness = Math.sqrt(
-            .299 * Math.pow(avgColor[0], 2) +
-              .587 * Math.pow(avgColor[1], 2) +
-              .114 * Math.pow(avgColor[2], 2)
+            0.299 * Math.pow(avgColor[0], 2) +
+              0.587 * Math.pow(avgColor[1], 2) +
+              0.114 * Math.pow(avgColor[2], 2)
           )
           this.styleObj.color =
             brightness > 127.5
@@ -51,6 +51,10 @@ export default {
         }, 1000 / this.profile.colorUpdateRate)
       }
     })
+
+    ipcRenderer.on('suspend', () => this.$router.push('/suspended'))
+
+    ipcRenderer.on('resume', () => this.$router.push('/'))
   },
   beforeDestroy() {
     clearInterval(this.intervalId)

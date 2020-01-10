@@ -115,10 +115,12 @@ app.on('ready', async () => {
 
   powerMonitor.on('lock-screen', () => {
     suspended = true
+    win.webContents.send('suspend')
   })
 
   powerMonitor.on('unlock-screen', () => {
     suspended = false
+    win.webContents.send('resume')
   })
 
   createWindow()
