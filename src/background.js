@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain, screen, Tray, Menu, powerMonitor } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, screen, Tray, Menu, powerMonitor, nativeImage } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import {
   createProtocol,
@@ -104,14 +104,12 @@ app.on('ready', async () => {
     autoUpdater.checkForUpdatesAndNotify()
   }
 
-  if (isWin) {
-    tray = new Tray(path.join(__static, 'favicon.ico'))
-    const contextMenu = Menu.buildFromTemplate([
-      { role: 'quit' }
-    ])
-    tray.setToolTip('Am I online?')
-    tray.setContextMenu(contextMenu)
-  }
+  tray = new Tray(nativeImage.createFromPath(path.join(__static, 'favicon.png')).resize({ width: 16, height: 16 }))
+  const contextMenu = Menu.buildFromTemplate([
+    { role: 'quit' }
+  ])
+  tray.setToolTip('Am I online?')
+  tray.setContextMenu(contextMenu)
 
   powerMonitor.on('lock-screen', () => {
     suspended = true
