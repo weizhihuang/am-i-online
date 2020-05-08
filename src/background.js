@@ -28,7 +28,7 @@ protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: tru
 function loadSettings() {
   const settingsPath = path.join(app.getPath('userData'), 'settings.json')
   if (!fs.existsSync(settingsPath)) {
-    fs.copyFileSync(path.join(__static, 'settings.json'), settingsPath)
+    fs.copyFileSync(path.join(__static, 'settings.json'), settingsPath) // eslint-disable-line no-undef
   }
   store = new Store()
 }
@@ -99,7 +99,7 @@ app.on('ready', async () => {
     autoUpdater.checkForUpdatesAndNotify()
   }
 
-  tray = new Tray(nativeImage.createFromPath(path.join(__static, 'favicon.png')).resize({ width: 16, height: 16 }))
+  tray = new Tray(nativeImage.createFromPath(path.join(__static, 'favicon.png')).resize({ width: 16, height: 16 })) // eslint-disable-line no-undef
   const contextMenu = Menu.buildFromTemplate([
     { role: 'quit' }
   ])
@@ -148,7 +148,11 @@ ipcMain.on('get-avg-color', event => {
     if (execSync('tasklist /fi "imagename eq consent.exe').toString().includes('=')) {
       return
     }
-    screenCaptor = fork(path.join(__static, 'screenCaptor'), [winPosition.x, winPosition.y, winSize.width, winSize.height], { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
+    screenCaptor = fork(
+      path.join(__static, 'screenCaptor'), // eslint-disable-line no-undef
+      [winPosition.x, winPosition.y, winSize.width, winSize.height],
+      { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] }
+    )
     screenCaptor.on('message', colors => {
       event.reply('reply-avg-color', map(range(3), i =>
         Math.round(
