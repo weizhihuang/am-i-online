@@ -8,16 +8,12 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib'
 import path from 'path'
 import fs from 'fs'
-import { execSync } from 'child_process'
-import robot from 'robotjs'
+import { execSync, fork } from 'child_process'
 import _, { range, map } from 'lodash'
 import Store from './Store'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 const isWin = process.platform === 'win32'
-
-const UAC_REG_QUERY = 'REG QUERY HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /v '
-const UACEnabled = isWin && execSync(UAC_REG_QUERY + 'EnableLUA').toString().includes('1') && execSync(UAC_REG_QUERY + 'PromptOnSecureDesktop').toString().includes('1')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -25,7 +21,6 @@ let win
 let winPosition, winSize
 let tray = null
 let store
-let suspended = false
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
@@ -112,12 +107,10 @@ app.on('ready', async () => {
   tray.setContextMenu(contextMenu)
 
   powerMonitor.on('lock-screen', () => {
-    suspended = true
     win.webContents.send('suspend')
   })
 
   powerMonitor.on('unlock-screen', () => {
-    suspended = false
     win.webContents.send('resume')
   })
 
@@ -148,31 +141,25 @@ ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
   event.reply('window-is-ready')
 })
 
+let screenCaptor
 ipcMain.on('get-avg-color', event => {
-  if (isWin) {
-    if (suspended || (UACEnabled && execSync('tasklist /fi "imagename eq consent.exe').toString().includes('='))) {
-      event.returnValue = [0, 0, 0]
+  // if (!screenCaptor?.connected) {
+  if (!(screenCaptor || {}).connected) {
+    if (execSync('tasklist /fi "imagename eq consent.exe').toString().includes('=')) {
       return
     }
-  }
-
-  const img = robot.screen.capture(winPosition.x, winPosition.y, winSize.width, winSize.height)
-  const rate = img.width / winSize.width
-
-  const colors = []
-  for (let i = 0; i < winSize.width; i++) {
-    for (let j = 0; j < winSize.height; j++) {
-      colors.push(img.colorAt(i * rate, j * rate))
-    }
-  }
-
-  event.returnValue = map(range(3), i =>
-    Math.round(
-      _(colors)
-        .map(color =>
-          map(color.match(/.{2}/g), c => parseInt(c, 16))
+    screenCaptor = fork(path.join(__static, 'screenCaptor'), [winPosition.x, winPosition.y, winSize.width, winSize.height], { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] })
+    screenCaptor.on('message', colors => {
+      event.reply('reply-avg-color', map(range(3), i =>
+        Math.round(
+          _(colors)
+            .map(color =>
+              map(color.match(/.{2}/g), c => parseInt(c, 16))
+            )
+            .meanBy(i)
         )
-        .meanBy(i)
-    )
-  )
+      ))
+    })
+  }
+  screenCaptor.send(null)
 })

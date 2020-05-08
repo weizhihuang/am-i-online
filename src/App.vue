@@ -36,8 +36,7 @@ export default {
       const { colorMode } = this.profile
 
       if (colorMode === 'Light') {
-        this.intervalId = setInterval(() => {
-          const avgColor = ipcRenderer.sendSync('get-avg-color')
+        ipcRenderer.on('reply-avg-color', (_, avgColor) => {
           // http://alienryderflex.com/hsp.html
           const brightness = Math.sqrt(
             0.299 * Math.pow(avgColor[0], 2) +
@@ -48,6 +47,9 @@ export default {
             brightness > 127.5
               ? this.profile.colorWhenBright
               : this.profile.colorWhenDark
+        })
+        this.intervalId = setInterval(() => {
+          ipcRenderer.send('get-avg-color')
         }, 1000 / this.profile.colorUpdateRate)
       }
     })
