@@ -145,7 +145,7 @@ let screenCaptor
 ipcMain.on('get-avg-color', event => {
   // if (!screenCaptor?.connected) {
   if (!(screenCaptor || {}).connected) {
-    if (execSync('tasklist /fi "imagename eq consent.exe').toString().includes('=')) {
+    if (isWin && execSync('tasklist /fi "imagename eq consent.exe').toString().includes('=')) {
       return
     }
     screenCaptor = fork(
