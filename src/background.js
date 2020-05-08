@@ -19,8 +19,10 @@ const isWin = process.platform === 'win32'
 // be closed automatically when the JavaScript object is garbage collected.
 let win
 let winPosition, winSize
-let tray = null
+let tray
 let store
+
+let screenCaptor
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
@@ -138,10 +140,10 @@ ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
   win.setSize(offsetWidth, offsetHeight)
   winPosition = { x: width - offsetWidth, y: 0 }
   winSize = { width: offsetWidth, height: offsetHeight }
+  screenCaptor = null
   event.reply('window-is-ready')
 })
 
-let screenCaptor
 ipcMain.on('get-avg-color', event => {
   // if (!screenCaptor?.connected) {
   if (!(screenCaptor || {}).connected) {
