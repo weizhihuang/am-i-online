@@ -7,6 +7,7 @@
 <script>
 import { remote, ipcRenderer } from 'electron'
 import { gt } from 'semver'
+import { reduce } from 'lodash'
 
 export default {
   name: 'App',
@@ -38,13 +39,15 @@ export default {
       if (colorMode === 'Light') {
         ipcRenderer.on('reply-avg-color', (_, avgColor) => {
           // http://alienryderflex.com/hsp.html
-          const brightness = Math.sqrt(
-            0.299 * Math.pow(avgColor[0], 2) +
-              0.587 * Math.pow(avgColor[1], 2) +
-              0.114 * Math.pow(avgColor[2], 2)
-          )
           this.styleObj.color =
-            brightness > 127.5
+            Math.sqrt(
+              reduce(
+                [0.299, 0.587, 0.114],
+                (result, value, key) =>
+                  result + value * Math.pow(avgColor[key], 2),
+                0
+              )
+            ) > 127.5
               ? this.profile.colorWhenBright
               : this.profile.colorWhenDark
         })
