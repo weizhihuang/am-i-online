@@ -1,0 +1,10 @@
+os: windows
+language: node_js
+node_js:
+  - "12"
+env:
+  - YARN_GPG=no
+
+script:
+  - yarn lint
+  - yarn electron:build -p onTagOrDraft
