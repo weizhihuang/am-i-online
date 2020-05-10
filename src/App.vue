@@ -15,6 +15,7 @@ export default {
     profile: null,
     styleObj: null,
     intervalId: null,
+    suspend: false,
   }),
   beforeCreate() {
     const version = remote.app.getVersion()
@@ -52,18 +53,24 @@ export default {
               : this.profile.colorWhenDark
         })
         this.intervalId = setInterval(() => {
-          ipcRenderer.send('get-avg-color')
+          if (!this.suspend) ipcRenderer.send('get-avg-color')
         }, 1000 / this.profile.colorUpdateRate)
       }
     })
 
-    ipcRenderer.on('suspend', () => this.$router.push('/suspended'))
+    ipcRenderer.on('suspend', () => (this.suspend = true))
 
-    ipcRenderer.on('resume', () => this.$router.push('/'))
+    ipcRenderer.on('resume', () => (this.suspend = false))
   },
   beforeDestroy() {
     clearInterval(this.intervalId)
     localStorage.setItem('lastUsed', this.profile.name)
+  },
+  watch: {
+    suspend(val) {
+      if (val) this.$router.push('/suspended')
+      else this.$router.push('/')
+    },
   },
 }
 </script>
