@@ -1,7 +1,10 @@
 {
   "name": "am-i-online",
   "version": "0.4.4",
-  "repository": "github:WeiZhiHuang/am-i-online",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WeiZhiHuang/am-i-online.git"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -16,7 +19,7 @@
     "core-js": "^3.3.2",
     "electron-updater": "^4.2.0",
     "lodash": "^4.17.15",
-    "robotjs": "git+https://github.com/octalmage/robotjs",
+    "robotjs": "git+https://github.com/octalmage/robotjs.git",
     "semver": "^6.3.0",
     "tcp-ping": "^0.1.1",
     "vue": "^2.6.10",
@@ -39,5 +42,12 @@
     "vue-cli-plugin-vuetify": "^2.0.2",
     "vue-template-compiler": "^2.6.10",
     "vuetify-loader": "^1.3.0"
-  }
+  },
+  "description": "```\r yarn install\r ```",
+  "bugs": {
+    "url": "https://github.com/WeiZhiHuang/am-i-online/issues"
+  },
+  "homepage": "https://github.com/WeiZhiHuang/am-i-online#readme",
+  "author": "WeiZhiHuang",
+  "license": "MIT"
 }
