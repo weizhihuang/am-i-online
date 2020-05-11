@@ -19,7 +19,7 @@ export default {
   }),
   beforeCreate() {
     const version = remote.app.getVersion()
-    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Light","colorWhenBright":"#000","colorWhenDark":"#fff","colorUpdateRate":2,"styleObj":{"float":"right"}}`
+    const defaultProfile = `{"name":"default","version":"${version}","colorMode":"Brightness","colorWhenBright":"#000","colorWhenDark":"#fff","colorUpdateRate":2,"styleObj":{"float":"right"}}`
     const profiles = JSON.parse(localStorage.getItem('profiles'))
     if (!profiles) {
       localStorage.setItem('profiles', `{"default":${defaultProfile}}`)
@@ -37,7 +37,7 @@ export default {
     ipcRenderer.on('window-is-ready', () => {
       const { colorMode } = this.profile
 
-      if (colorMode === 'Light') {
+      if (colorMode === 'Brightness') {
         ipcRenderer.on('reply-avg-color', (_, avgColor) => {
           // http://alienryderflex.com/hsp.html
           const brightness = Math.sqrt(
