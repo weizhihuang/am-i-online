@@ -7,7 +7,7 @@
 <script>
 import { remote, ipcRenderer } from 'electron'
 import { gt } from 'semver'
-import { reduce } from 'lodash'
+import { reduce, inRange } from 'lodash'
 
 export default {
   name: 'App',
@@ -40,17 +40,19 @@ export default {
       if (colorMode === 'Light') {
         ipcRenderer.on('reply-avg-color', (_, avgColor) => {
           // http://alienryderflex.com/hsp.html
-          this.styleObj.color =
-            Math.sqrt(
-              reduce(
-                [0.299, 0.587, 0.114],
-                (result, value, key) =>
-                  result + value * Math.pow(avgColor[key], 2),
-                0
-              )
-            ) > 127.5
-              ? this.profile.colorWhenBright
-              : this.profile.colorWhenDark
+          const brightness = Math.sqrt(
+            reduce(
+              [0.299, 0.587, 0.114],
+              (result, value, key) =>
+                result + value * Math.pow(avgColor[key], 2),
+              0
+            )
+          )
+          if (!inRange(brightness, 112, 144))
+            this.styleObj.color =
+              brightness > 128
+                ? this.profile.colorWhenBright
+                : this.profile.colorWhenDark
         })
         this.intervalId = setInterval(() => {
           if (!this.suspend) ipcRenderer.send('get-avg-color')
