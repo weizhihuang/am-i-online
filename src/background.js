@@ -136,10 +136,7 @@ if (isDevelopment) {
 
 ipcMain.on('set-window', (event, { offsetWidth, offsetHeight }) => {
   const { width } = screen.getPrimaryDisplay().workAreaSize
-  win.setPosition(width - offsetWidth, 0)
-  win.setSize(offsetWidth, offsetHeight)
-  winPosition = { x: width - offsetWidth, y: 0 }
-  winSize = { width: offsetWidth, height: offsetHeight }
+  win.setBounds({ x: width - offsetWidth, y: 0, width: offsetWidth, height: offsetHeight })
   screenCaptor = null
   event.reply('window-is-ready')
 })
@@ -152,7 +149,7 @@ ipcMain.on('get-avg-color', event => {
     }
     screenCaptor = fork(
       path.join(__static, 'screenCaptor'), // eslint-disable-line no-undef
-      [winPosition.x, winPosition.y, winSize.width, winSize.height],
+      Object.values(win.getBounds()),
       { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] }
     )
     screenCaptor.on('message', colors => {
