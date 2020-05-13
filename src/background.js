@@ -6,8 +6,8 @@ import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
-import path from 'path'
-import fs from 'fs'
+import { join } from 'path'
+import { existsSync } from 'fs'
 import { execSync, fork } from 'child_process'
 import _, { range, map } from 'lodash'
 import Store from './Store'
@@ -28,9 +28,9 @@ let screenCaptor
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }])
 
 function loadSettings() {
-  const settingsPath = path.join(app.getPath('userData'), 'settings.json')
-  if (!fs.existsSync(settingsPath)) {
-    fs.copyFileSync(path.join(__static, 'settings.json'), settingsPath) // eslint-disable-line no-undef
+  const settingsPath = join(app.getPath('userData'), 'settings.json')
+  if (!existsSync(settingsPath)) {
+    copyFileSync(join(__static, 'settings.json'), settingsPath) // eslint-disable-line no-undef
   }
   store = new Store()
 }
@@ -101,7 +101,7 @@ app.on('ready', async () => {
     autoUpdater.checkForUpdatesAndNotify()
   }
 
-  tray = new Tray(nativeImage.createFromPath(path.join(__static, 'favicon.png')).resize({ width: 16, height: 16 })) // eslint-disable-line no-undef
+  tray = new Tray(nativeImage.createFromPath(join(__static, 'favicon.png')).resize({ width: 16, height: 16 })) // eslint-disable-line no-undef
   const contextMenu = Menu.buildFromTemplate([
     { role: 'quit' }
   ])
@@ -151,7 +151,7 @@ ipcMain.on('get-avg-color', event => {
       return
     }
     screenCaptor = fork(
-      path.join(__static, 'screenCaptor'), // eslint-disable-line no-undef
+      join(__static, 'screenCaptor'), // eslint-disable-line no-undef
       [winPosition.x, winPosition.y, winSize.width, winSize.height],
       { stdio: ['pipe', 'pipe', 'pipe', 'ipc'] }
     )
