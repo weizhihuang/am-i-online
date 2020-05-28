@@ -18,7 +18,6 @@ const isWin = process.platform === 'win32'
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
-let winPosition, winSize
 let tray
 let store
 
