@@ -7,7 +7,7 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 import { join } from 'path'
-import { existsSync } from 'fs'
+import { existsSync, copyFileSync } from 'fs'
 import { execSync, fork } from 'child_process'
 import _, { range, map } from 'lodash'
 import Store from './Store'
