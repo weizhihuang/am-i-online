@@ -18,7 +18,7 @@
   "dependencies": {
     "core-js": "^3.3.2",
     "electron-updater": "^4.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "robotjs": "git+https://github.com/octalmage/robotjs.git",
     "semver": "^6.3.0",
     "tcp-ping": "^0.1.1",
