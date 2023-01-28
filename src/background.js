@@ -104,7 +104,7 @@ app.on('ready', async () => {
   const contextMenu = Menu.buildFromTemplate([
     { role: 'quit' }
   ])
-  tray.setToolTip('Am I online?')
+  tray.setToolTip('Am I Online?')
   tray.setContextMenu(contextMenu)
 
   powerMonitor.on('lock-screen', () => {
